@@ -1,7 +1,6 @@
 <#
-Appends a timestamped entry to activity.log and commits it.
-Intended to be run on a schedule (Windows Task Scheduler) via run_task.bat.
-Local-only by default: this script never pushes to a remote.
+Appends a timestamped entry to activity.log, commits it, and pushes to origin.
+Intended to be run on a schedule (Windows Task Scheduler).
 #>
 
 $ErrorActionPreference = "Stop"
@@ -32,5 +31,4 @@ if ([string]::IsNullOrWhiteSpace($status)) {
 git commit -m "$note ($timestamp)" | Out-Null
 Write-Output "Committed: $note ($timestamp)"
 
-# To also push to a remote, uncomment the line below once a remote is configured:
-# git push
+git push

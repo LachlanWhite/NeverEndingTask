@@ -32,3 +32,14 @@ git commit -m "$note ($timestamp)" | Out-Null
 Write-Output "Committed: $note ($timestamp)"
 
 git push
+
+# Reschedule the next run at a random point 1-3 days out, between 08:00 and 21:59,
+# so the cadence and time of day both vary instead of firing on a fixed clock.
+$dayOffset = Get-Random -Minimum 1 -Maximum 4
+$hour = Get-Random -Minimum 8 -Maximum 22
+$minute = Get-Random -Minimum 0 -Maximum 60
+$nextRun = (Get-Date).Date.AddDays($dayOffset).AddHours($hour).AddMinutes($minute)
+
+$trigger = New-ScheduledTaskTrigger -Once -At $nextRun
+Set-ScheduledTask -TaskName "AutoGitPusher" -Trigger $trigger | Out-Null
+Write-Output "Next run scheduled for $nextRun"
